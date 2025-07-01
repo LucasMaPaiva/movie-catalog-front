@@ -1,18 +1,29 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from "node:url"
+import tailwindcss from '@tailwindcss/vite'
 
-// https://vitejs.dev/config/
+
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    tailwindcss(),
+  ],
   server: {
-    host: '0.0.0.0', // Necessário para que o servidor seja acessível de fora do container Docker
-    port: 5173, // Atualizado para a porta 5173, conforme a saída do Vite
+    host: '0.0.0.0',
+    port: 5173,
     proxy: {
-      '/api': { // Qualquer requisição que começar com /api será redirecionada
-        target: 'http://nginx', // Aponta para o serviço Nginx no Docker Compose
+      '/api/v1': {
+        target: 'http://localhost:8089',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '') // Remove o prefixo /api antes de enviar para o backend
+        secure: false,
+
       }
     }
-  }
+  },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url))
+    },
+  },
 })
