@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { fetchMovies } from '@/shared/utils/ListFilms.js';
 import { fetchTopRated } from '@/shared/utils/ListFilmsTopRated.js';
 
@@ -23,7 +23,6 @@ const fetchLatestMovies = async () => {
   } catch (error) {
     errorMessage.value = error.message;
     console.error("Erro ao carregar filmes populares:", error);
-  } finally {
   }
 };
 
@@ -34,7 +33,6 @@ const fetchTopMovies = async () => {
   } catch (error) {
     errorMessage.value = error.message;
     console.error("Erro ao carregar filmes de melhores avaliações:", error);
-  } finally {
   }
 };
 
@@ -78,32 +76,6 @@ const scrollCarousel = (listRef, direction) => {
 
 const scrollPopularMovies = (direction) => scrollCarousel(moviesListRef, direction);
 const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, direction);
-
-const featuredMovieGenres = computed(() => {
-  if (!featuredMovie.value || !featuredMovie.value.genre_ids) return 'Gêneros desconhecidos';
-  const genreNames = {
-    28: 'Ação',
-    12: 'Aventura',
-    16: 'Animação',
-    35: 'Comédia',
-    80: 'Crime',
-    99: 'Documentário',
-    18: 'Drama',
-    10751: 'Família',
-    14: 'Fantasia',
-    36: 'História',
-    27: 'Terror',
-    10402: 'Música',
-    9648: 'Mistério',
-    10749: 'Romance',
-    878: 'Ficção Científica',
-    10770: 'Filme TV',
-    53: 'Thriller',
-    10752: 'Guerra',
-    37: 'Faroeste'
-  };
-  return featuredMovie.value.genre_ids.map(id => genreNames[id] || 'Desconhecido').filter(Boolean).join(' • ');
-});
 
 </script>
 
