@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { HttpClientService } from '@/shared/services/http_client/HttpClientService.js'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -8,6 +9,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: !!localStorage.getItem('auth_token'),
     authError: null,
     isLoading: false,
+    httpClient: new HttpClientService()
   }),
   getters: {
     isAuthenticated: (state) => state.token !== null,
@@ -19,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true;
       this.authError = null;
       try {
-        const response = await axios.post('http://localhost:8089/api/v1/auth/login', { email, password });
+        const response = await this.httpClient.post('/auth/login', { email, password });
 
         const { user, access_token } = response.data.data;
 
@@ -42,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true;
       this.authError = null;
       try {
-        const response = await axios.post('http://localhost:8089/api/v1/auth/register', { name, email, password });
+        const response = await this.httpClient.post('/auth/register', { name, email, password });
         return response.data;
       } catch (error) {
         this.authError = error.response?.data?.message || 'Erro ao cadastrar.';
