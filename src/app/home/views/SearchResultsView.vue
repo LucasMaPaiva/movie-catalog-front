@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { fetchMoviesSearch } from '@/shared/utils/SearchFilms.js';
 import { addMovieToFavorites } from '@/shared/utils/FavoriteService.js';
-import { useAuthStore } from '@/stores/auth.js';
+import { useAuthStore } from '@/shared/stores/auth.js';
 
 const route = useRoute();
 const movies = ref([]);
