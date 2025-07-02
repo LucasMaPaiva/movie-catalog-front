@@ -1,35 +1,76 @@
-# .
+# 🎬 Cine Art: Catálogo de Filmes
 
-This template should help get you started developing with Vue 3 in Vite.
+Este repositório contém o código-fonte da aplicação **Cine Art**, um catálogo de filmes interativo que permite aos usuários explorar, pesquisar e gerenciar suas coleções de filmes favoritos. A aplicação é composta por um **backend robusto em Laravel** e um **frontend dinâmico em Vue.js**.
 
-## Recommended IDE Setup
+Link do repositório do back
+https://github.com/LucasMaPaiva/movie-catalog-api
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Customize configuration
+## ✨ Visão Geral do Projeto e Funcionalidades
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+O **Cine Art** oferece um conjunto de funcionalidades voltadas à experiência do usuário com um catálogo de filmes:
 
-## Project Setup
+### 🔐 Autenticação de Usuário
+- Funcionalidades essenciais de registro e login.
 
-```sh
-npm install
+### 🔎 Busca de Filmes
+- Pesquise filmes pelo nome.
+- Integração com a API do **The Movie Database (TMDB)**.
+
+### ⭐ Gerenciamento de Filmes Favoritos
+- **Adicionar**: Marque filmes de interesse para sua lista de favoritos (armazenamento local).
+- **Visualizar**: Tela dedicada para exibir sua lista de filmes favoritos.
+- **Filtrar por Gênero**: Opção para refinar a lista de favoritos por gênero.
+- **Remover**: Desmarque filmes da sua lista de favoritos.
+
+---
+
+## ⚙️ Tecnologias Utilizadas
+
+### Backend
+- **Laravel** – Framework PHP para construção da API.
+- **MySQL** – Banco de dados relacional.
+
+### Frontend
+- **Vue.js 3** – Framework JavaScript para construção de SPA (Single Page Application).
+- **Pinia** – Gerenciador de estado moderno para Vue.js.
+- **Tailwind CSS** – Framework utilitário para estilização.
+
+### Ambiente
+- **Docker & Docker Compose** – Utilizados para containerização dos serviços e facilitar o setup.
+
+---
+
+## 🚀 Como Configurar e Executar Localmente com Docker
+
+Siga os passos abaixo para iniciar a aplicação em seu ambiente de desenvolvimento local:
+
+### 1. Clonar o Repositório
+
+```bash
+
+git clone git@github.com:LucasMaPaiva/movie-catalog-front.git
+cd movie-catalog-api
 ```
 
-### Compile and Hot-Reload for Development
+### 2. Configurar Variáveis de Ambiente
 
-```sh
-npm run dev
+Crie uma cópia do arquivo .env.example e renomeie para .env:
+
+```bash
+
+cp .env.example .env
 ```
 
-### Compile and Minify for Production
 
-```sh
-npm run build
+### 3. Instalar as Dependências
+
+Execute o comando:
+
+```bash
+
+make install
 ```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+---
