@@ -7,7 +7,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './shared/services/router'
 
-import { useAuthStore } from './stores/auth';
+import { useAuthStore } from '@/shared/stores/auth';
 
 const app = createApp(App)
 const pinia = createPinia()
