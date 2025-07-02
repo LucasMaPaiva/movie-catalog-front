@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../../../stores/auth.js'
-import LoginView from '@/views/Auth/LoginView.vue'
-import LayoutComponent from '@/shared/components/LayoutComponent.vue'
-import RegisterView from '@/views/Auth/RegisterView.vue'
+import { useAuthStore } from '@/shared/stores/auth.js'
+import LoginView from '@/app/auth/views/LoginView.vue'
+import LayoutComponent from '@/shared/components/layout/LayoutComponent.vue'
+import RegisterView from '@/app/auth/views/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,17 +25,17 @@ const router = createRouter({
         {
           path: '/',
           name: "home",
-          component: () => import('@/views/HomeView.vue'),
+          component: () => import('@/app/home/views/HomeView.vue'),
         },
         {
           path: "/favorites",
           name: "favorites",
-          component: () => import("@/views/FavoritesView.vue")
+          component: () => import("@/app/favorites/views/FavoritesView.vue")
         },
         {
           path: "/search",
           name: "searchResults",
-          component: () => import('@/views/SearchResultsView.vue'),
+          component: () => import('@/app/home/views/SearchResultsView.vue'),
           props: (route) => ({ query: route.query.query })
         }
       ]
@@ -43,7 +43,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: () => import('../../../views/NotFoundView.vue')
+      component: () => import('../../components/utils/NotFoundView.vue')
     }
   ]
 })
