@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchMoviesSearch } from '@/shared/utils/SearchFilms.js';
+import { fetchMoviesSearch } from '@/shared/utils/SearchMoviesService.js';
 import { addMovieToFavorites } from '@/shared/utils/FavoriteService.js';
 import { useAuthStore } from '@/shared/stores/auth.js';
 
