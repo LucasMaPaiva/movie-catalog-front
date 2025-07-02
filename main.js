@@ -10,7 +10,7 @@ const app = createApp(App)
 const pinia = createPinia()
 app.use(pinia)
 
-import { useAuthStore } from '@/stores/auth.js';
+import { useAuthStore } from '@/shared/stores/auth.js';
 const authStore = useAuthStore();
 authStore.initializeAuth();
 
