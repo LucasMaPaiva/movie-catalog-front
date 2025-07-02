@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../../shared/stores/auth';
-import { fetchFavoriteMovies } from '../../../shared/utils/ListFavorites';
+import { fetchFavoriteMovies } from '../../../shared/utils/ListFavoritesMoviesService';
 import { removeMovieFromFavorites } from '../../../shared/utils/FavoriteService';
 import { fetchGenres } from '../../../shared/utils/GenreService';
 
