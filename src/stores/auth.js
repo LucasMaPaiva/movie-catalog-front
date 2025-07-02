@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
+    user: JSON.parse(localStorage.getItem('user_data') || 'null'),
     token: localStorage.getItem('auth_token') || null,
     isAuthenticated: !!localStorage.getItem('auth_token'),
     authError: null,
@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (state) => state.token !== null,
     authToken: (state) => state.token,
+    userId: (state) => state.user ? state.user.id : null,
   },
   actions: {
     async login(email, password) {
@@ -24,8 +25,10 @@ export const useAuthStore = defineStore('auth', {
 
         this.user = user;
         this.token = access_token;
-        // this.isAuthenticated = true;
+
         localStorage.setItem('auth_token', access_token);
+        localStorage.setItem('user_data', JSON.stringify(user));
+
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       } catch (error) {
         this.authError = error.response?.data?.message || 'Erro ao fazer login.';
@@ -52,8 +55,8 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = null;
       this.token = null;
-      // this.isAuthenticated = false;
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_data');
       delete axios.defaults.headers.common['Authorization'];
     },
 
