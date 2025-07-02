@@ -1,11 +1,13 @@
-import axios from 'axios';
+import { HttpClientService } from '@/shared/services/http_client/HttpClientService.js'
 
 /**
  * @returns {Promise<Array>}
  */
 export const fetchTopRated = async () => {
+  const httpClient = new HttpClientService();
+
   try {
-    const response = await axios.get('http://localhost:8089/api/v1/movies/top_rated');
+    const response = await httpClient.get('/movies/top_rated');
     return response.data;
   } catch (err) {
     console.error('Erro na chamada da API fetchMovies:', err);

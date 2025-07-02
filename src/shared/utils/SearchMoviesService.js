@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { HttpClientService } from '@/shared/services/http_client/HttpClientService.js'
 
 /**
  * @param {string} query
@@ -6,8 +6,10 @@ import axios from 'axios';
  * @throws {Error}
  */
 export const fetchMoviesSearch = async (query) => {
+  const httpClient = new HttpClientService();
+
   try {
-    const response = await axios.get(`http://localhost:8089/api/v1/movies/search?query=${query}`);
+    const response = await httpClient.get(`/movies/search?query=${query}`);
     return response.data.results || [];
   } catch (err) {
     console.error('Erro na chamada da API fetchMoviesSearch:', err);

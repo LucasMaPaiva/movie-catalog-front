@@ -1,5 +1,5 @@
 // src/shared/utils/FavoriteService.js
-import axios from 'axios';
+import { HttpClientService } from '@/shared/services/http_client/HttpClientService.js'
 
 /**
  * @param {string} userId
@@ -7,8 +7,10 @@ import axios from 'axios';
  * @returns {Promise<object>}
  */
 export const addMovieToFavorites = async (userId, movieData) => {
+  const httpClient = new HttpClientService();
+
   try {
-    const response = await axios.post(`http://localhost:8089/api/v1/user/${userId}/favorite-movie`, movieData);
+    const response = await httpClient.post(`/user/${userId}/favorite-movie`, movieData);
     return response.data;
   } catch (error) {
     console.error('Erro ao adicionar filme aos favoritos:', error);
@@ -18,12 +20,14 @@ export const addMovieToFavorites = async (userId, movieData) => {
 
 /**
  * @param {string} userId
- * @param {number} movieId - O ID do filme a ser removido.
+ * @param {number} movieId
  * @returns {Promise<object>}
  */
 export const removeMovieFromFavorites = async (userId, movieId) => {
+  const httpClient = new HttpClientService();
+
   try {
-    const response = await axios.post(`http://localhost:8089/api/v1/user/${userId}/remove-favorite`, { movie_id: movieId });
+    const response = await httpClient.post(`/user/${userId}/remove-favorite`, { movie_id: movieId });
     return response.data;
   } catch (error) {
     console.error('Erro ao remover filme dos favoritos:', error);

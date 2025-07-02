@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { HttpClientService } from '@/shared/services/http_client/HttpClientService.js'
 
 /**
  * @param {string} userId
@@ -6,18 +6,20 @@ import axios from 'axios';
  * @returns {Promise<Array>}
  */
 export const fetchFavoriteMovies = async (userId, genreIds = null) => {
+  const httpClient = new HttpClientService();
+
   if (!userId) {
     throw new Error('ID do usuário é necessário para buscar filmes favoritos.');
   }
 
-  let url = `http://localhost:8089/api/v1/user/${userId}/list-favorites`;
+  let url = `/user/${userId}/list-favorites`;
 
   if (genreIds) {
     url += `?genre_ids=${genreIds}`;
   }
 
   try {
-    const response = await axios.get(url);
+    const response = await httpClient.get(url);
     return response.data.data;
   } catch (err) {
     console.error('Erro na chamada da API fetchFavoriteMovies:', err);
