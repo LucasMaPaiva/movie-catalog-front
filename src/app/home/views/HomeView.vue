@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchMovies } from '@/shared/utils/ListFilms.js';
-import { fetchTopRated } from '@/shared/utils/ListFilmsTopRated.js';
+import { fetchMovies } from '@/shared/utils/ListPopularMoviesService.js';
+import { fetchTopRated } from '@/shared/utils/ListTopRatedMoviesService.js';
 
 const movies = ref([]);
 const topRated = ref([]);
