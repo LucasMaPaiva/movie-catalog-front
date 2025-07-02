@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../../../views/HomeView.vue'
-// import RegisterView from '../../../views/Auth/RegisterView.vue'
-// import FavoritesView from '../../../views/FavoritesView.vue'
 import { useAuthStore } from '../../../stores/auth.js'
 import LoginView from '@/views/Auth/LoginView.vue'
 import LayoutComponent from '@/shared/components/LayoutComponent.vue'
@@ -34,6 +31,12 @@ const router = createRouter({
           path: "/favorites",
           name: "favorites",
           component: () => import("@/views/FavoritesView.vue")
+        },
+        {
+          path: "/search",
+          name: "searchResults",
+          component: () => import('@/views/SearchResultsView.vue'),
+          props: (route) => ({ query: route.query.query })
         }
       ]
     },
