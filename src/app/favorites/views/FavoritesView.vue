@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAuthStore } from '@/stores/auth.js';
-import { fetchFavoriteMovies } from '../shared/utils/ListFavorites';
-import { removeMovieFromFavorites } from '../shared/utils/FavoriteService';
-import { fetchGenres } from '../shared/utils/GenreService';
+import { useAuthStore } from '../../../shared/stores/auth';
+import { fetchFavoriteMovies } from '../../../shared/utils/ListFavorites';
+import { removeMovieFromFavorites } from '../../../shared/utils/FavoriteService';
+import { fetchGenres } from '../../../shared/utils/GenreService';
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -253,11 +253,11 @@ watch(
 .movie-genres {
   font-size: 0.9em;
   color: #888;
-  margin-bottom: 10px; /* Espaçamento antes do botão */
+  margin-bottom: 10px;
 }
 
 .remove-favorite-btn {
-  background-color: #dc2626; /* Cor vermelha para remoção (Tailwind red-600) */
+  background-color: #dc2626;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -273,7 +273,7 @@ watch(
 }
 
 .remove-favorite-btn:hover {
-  background-color: #ef4444; /* red-500 ao hover */
+  background-color: #ef4444;
 }
 
 .remove-favorite-btn svg {
