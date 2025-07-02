@@ -99,34 +99,9 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
         </p>
         <p class="banner-description">{{ featuredMovie.overview }}</p>
 
-        <div class="banner-buttons">
-          <button class="btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-              <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.49-2.321 2.791-1.661L11.54 7.647a1.861 1.861 0 0 1 0 3.702l-4.249 2.116c-1.301.66-2.791-.235-2.791-1.66V5.653ZM13.882 18.032a1.861 1.861 0 0 0 2.684 0l4.249-2.116c1.301-.66 1.301-2.556 0-3.216l-4.249-2.116a1.861 1.861 0 0 0-2.684 0l-4.249 2.116c-1.301.66-1.301 2.556 0 3.216l4.249 2.116Z" clip-rule="evenodd" />
-            </svg>
-            Ver detalhes
-          </button>
-          <button class="btn-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-              <path d="M6.347 3.997A2.25 2.25 0 0 1 8.5 3.75h.588a2.25 2.25 0 0 1 2.183 1.58l.147.304A1.125 1.125 0 0 0 12 5.5h2.25a1.125 1.125 0 0 0 1.09-.716l.147-.304A2.25 2.25 0 0 1 17.912 3.75h.588a2.25 2.25 0 0 1 2.156 2.572l-1.48 8.88a2.25 2.25 0 0 1-2.154 1.948H9.75a2.25 2.25 0 0 1-2.154-1.948l-1.479-8.88A2.25 2.25 0 0 1 6.347 3.997Z" />
-              <path fill-rule="evenodd" d="M3.002 19.923a.75.75 0 0 1 1-.91C5.228 18.674 7.427 18 9.75 18c2.322 0 4.521.674 5.748 1.013a.75.75 0 0 1 1 .919.75.75 0 0 1-.51.94l-1.455.364A8.973 8.973 0 0 1 9.75 20.25a8.973 8.973 0 0 1-3.793-.956L3.512 20.86a.75.75 0 0 1-.51-.94ZM11.47 7.072a.75.75 0 0 1 1.06 0L17.25 11.88a.75.75 0 0 1-1.06 1.06l-4.22-4.22-1.97 1.97a.75.75 0 0 1-1.06 0Z" clip-rule="evenodd" />
-            </svg>
-            Assistir ao trailer
-          </button>
-          <button class="btn-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-              <path d="M12 2a10 10 0 10 0 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM11 7h2v6h-2V7zm0 8h2v2h-2v-2z" />
-            </svg>
-            Adicionar aos favoritos
-          </button>
-        </div>
+
       </div>
-      <div class="banner-indicators">
-        <span class="indicator active"></span>
-        <span class="indicator"></span>
-        <span class="indicator"></span>
-        <span class="indicator"></span>
-      </div>
+
     </div>
 
     <div class="movies-section">
@@ -219,7 +194,6 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
   background-color: #1a1a1a;
 }
 
-
 .main-banner {
   width: 100%;
   height: 600px;
@@ -231,7 +205,6 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
   padding: 50px;
   box-sizing: border-box;
 }
-
 
 .main-banner::before {
   content: '';
@@ -344,13 +317,10 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
   background-color: #e50914;
 }
 
-
-
 .movies-section {
   padding: 20px;
   background-color: #1a1a1a;
   margin-top: 20px;
-
 }
 
 .movies-section h2 {
@@ -363,9 +333,9 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
   display: flex;
   align-items: center;
   position: relative;
-  padding: 0 50px;
 
-  margin: 0 -50px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .movies-list {
@@ -377,8 +347,6 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
   scrollbar-width: none;
   -ms-overflow-style: none;
   flex-grow: 1;
-  padding-left: 50px;
-  padding-right: 50px;
 }
 
 .movies-list::-webkit-scrollbar {
@@ -455,12 +423,31 @@ const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, dire
 }
 
 .prev-button {
-  left: 0;
-  transform: translateX(-50%) rotate(180deg);
+  left: -20px;
+  transform: rotate(180deg);
 }
 
 .next-button {
-  right: 0;
-  transform: translateX(50%);
+  right: -20px;
+  transform: none;
 }
+
+
+.movies-carousel:hover .nav-button {
+  opacity: 1;
+}
+
+
+.movies-list::-webkit-scrollbar {
+  display: none;
+}
+
+.movies-list {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: auto;
+}
+
+
+
 </style>
