@@ -1,9 +1,494 @@
 <script setup>
+import { ref, onMounted, computed } from 'vue';
+import { fetchMovies } from '@/shared/utils/ListFilms.js';
+import { fetchTopRated } from '@/shared/utils/ListFilmsTopRated.js';
+
+const movies = ref([]);
+const topRated = ref([]);
+const errorMessage = ref(null);
+const isLoading = ref(true);
+
+const moviesListRef = ref(null);
+const topRatedListRef = ref(null);
+
+const featuredMovie = ref(null);
+
+const fetchLatestMovies = async () => {
+  try {
+    const data = await fetchMovies();
+    movies.value = data.results || [];
+    if (!featuredMovie.value && movies.value.length > 0) {
+      featuredMovie.value = movies.value[0];
+    }
+  } catch (error) {
+    errorMessage.value = error.message;
+    console.error("Erro ao carregar filmes populares:", error);
+  } finally {
+  }
+};
+
+const fetchTopMovies = async () => {
+  try {
+    const data = await fetchTopRated();
+    topRated.value = data.results || [];
+  } catch (error) {
+    errorMessage.value = error.message;
+    console.error("Erro ao carregar filmes de melhores avaliações:", error);
+  } finally {
+  }
+};
+
+onMounted(async () => {
+  await Promise.all([fetchLatestMovies(), fetchTopMovies()]).finally(() => {
+    isLoading.value = false;
+  });
+});
+
+
+const getImageUrl = (path, type = 'poster') => {
+  if (!path) return '';
+  const baseUrl = type === 'backdrop' ? 'https://image.tmdb.org/t/p/original' : 'https://image.tmdb.org/t/p/w500';
+  return `${baseUrl}${path}`;
+};
+
+const formatRuntime = (minutes) => {
+  if (!minutes) return 'Duração desconhecida';
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours} hr ${remainingMinutes} min`;
+};
+
+
+const scrollCarousel = (listRef, direction) => {
+  if (listRef && listRef.value) {
+    const scrollAmount = listRef.value.clientWidth * 0.7;
+    if (direction === 'next') {
+      listRef.value.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    } else {
+      listRef.value.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  }
+};
+
+const scrollPopularMovies = (direction) => scrollCarousel(moviesListRef, direction);
+const scrollTopRatedMovies = (direction) => scrollCarousel(topRatedListRef, direction);
+
+const featuredMovieGenres = computed(() => {
+  if (!featuredMovie.value || !featuredMovie.value.genre_ids) return 'Gêneros desconhecidos';
+  const genreNames = {
+    28: 'Ação',
+    12: 'Aventura',
+    16: 'Animação',
+    35: 'Comédia',
+    80: 'Crime',
+    99: 'Documentário',
+    18: 'Drama',
+    10751: 'Família',
+    14: 'Fantasia',
+    36: 'História',
+    27: 'Terror',
+    10402: 'Música',
+    9648: 'Mistério',
+    10749: 'Romance',
+    878: 'Ficção Científica',
+    10770: 'Filme TV',
+    53: 'Thriller',
+    10752: 'Guerra',
+    37: 'Faroeste'
+  };
+  return featuredMovie.value.genre_ids.map(id => genreNames[id] || 'Desconhecido').filter(Boolean).join(' • ');
+});
 
 </script>
 
 <template>
-  <div>
-    <h1>teste</h1>
+  <div class="home-page">
+    <div v-if="isLoading" class="loading-full-screen">
+      Carregando...
+    </div>
+
+    <div v-else-if="errorMessage" class="error-full-screen">
+      {{ errorMessage }}
+    </div>
+
+    <div v-else-if="featuredMovie" class="main-banner"
+         :style="{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%), url(' + getImageUrl(featuredMovie.backdrop_path, 'backdrop') + ')' }">
+      <div class="banner-content">
+        <p class="banner-year">{{ featuredMovie.release_date ? featuredMovie.release_date.substring(0, 4) : '' }}</p>
+        <h1 class="banner-title">{{ featuredMovie.title }}</h1>
+        <p class="banner-meta">
+          {{ formatRuntime(featuredMovie.runtime) }} • {{ featuredMovieGenres }}
+        </p>
+        <p class="banner-description">{{ featuredMovie.overview }}</p>
+
+        <div class="banner-buttons">
+          <button class="btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.49-2.321 2.791-1.661L11.54 7.647a1.861 1.861 0 0 1 0 3.702l-4.249 2.116c-1.301.66-2.791-.235-2.791-1.66V5.653ZM13.882 18.032a1.861 1.861 0 0 0 2.684 0l4.249-2.116c1.301-.66 1.301-2.556 0-3.216l-4.249-2.116a1.861 1.861 0 0 0-2.684 0l-4.249 2.116c-1.301.66-1.301 2.556 0 3.216l4.249 2.116Z" clip-rule="evenodd" />
+            </svg>
+            Ver detalhes
+          </button>
+          <button class="btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M6.347 3.997A2.25 2.25 0 0 1 8.5 3.75h.588a2.25 2.25 0 0 1 2.183 1.58l.147.304A1.125 1.125 0 0 0 12 5.5h2.25a1.125 1.125 0 0 0 1.09-.716l.147-.304A2.25 2.25 0 0 1 17.912 3.75h.588a2.25 2.25 0 0 1 2.156 2.572l-1.48 8.88a2.25 2.25 0 0 1-2.154 1.948H9.75a2.25 2.25 0 0 1-2.154-1.948l-1.479-8.88A2.25 2.25 0 0 1 6.347 3.997Z" />
+              <path fill-rule="evenodd" d="M3.002 19.923a.75.75 0 0 1 1-.91C5.228 18.674 7.427 18 9.75 18c2.322 0 4.521.674 5.748 1.013a.75.75 0 0 1 1 .919.75.75 0 0 1-.51.94l-1.455.364A8.973 8.973 0 0 1 9.75 20.25a8.973 8.973 0 0 1-3.793-.956L3.512 20.86a.75.75 0 0 1-.51-.94ZM11.47 7.072a.75.75 0 0 1 1.06 0L17.25 11.88a.75.75 0 0 1-1.06 1.06l-4.22-4.22-1.97 1.97a.75.75 0 0 1-1.06 0Z" clip-rule="evenodd" />
+            </svg>
+            Assistir ao trailer
+          </button>
+          <button class="btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M12 2a10 10 0 10 0 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM11 7h2v6h-2V7zm0 8h2v2h-2v-2z" />
+            </svg>
+            Adicionar aos favoritos
+          </button>
+        </div>
+      </div>
+      <div class="banner-indicators">
+        <span class="indicator active"></span>
+        <span class="indicator"></span>
+        <span class="indicator"></span>
+        <span class="indicator"></span>
+      </div>
+    </div>
+
+    <div class="movies-section">
+      <h2>Filmes populares</h2>
+      <div v-if="isLoading" class="loading-message">
+        Carregando filmes...
+      </div>
+      <div v-else-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <div v-else class="movies-carousel">
+        <button class="nav-button prev-button" @click="scrollPopularMovies('prev')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd" d="M11.72 4.22a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L18.19 12l-6.47-6.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <div class="movies-list" ref="moviesListRef">
+          <div v-for="movie in movies" :key="movie.id" class="movie-card">
+            <img :src="getImageUrl(movie.poster_path, 'poster')" :alt="movie.title" class="movie-poster" />
+            <div class="movie-info">
+              <h3 class="movie-title">{{ movie.title }}</h3>
+              <p class="movie-genres">
+                {{ movie.release_date ? movie.release_date.substring(0, 4) : 'Ano Desconhecido' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button class="nav-button next-button" @click="scrollPopularMovies('next')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd" d="M11.72 4.22a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L18.19 12l-6.47-6.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="movies-section">
+      <h2>Melhores Avaliações</h2>
+      <div v-if="isLoading" class="loading-message">
+        Carregando filmes...
+      </div>
+      <div v-else-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <div v-else class="movies-carousel">
+        <button class="nav-button prev-button" @click="scrollTopRatedMovies('prev')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd" d="M11.72 4.22a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L18.19 12l-6.47-6.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <div class="movies-list" ref="topRatedListRef">
+          <div v-for="movie in topRated" :key="movie.id" class="movie-card">
+            <img :src="getImageUrl(movie.poster_path, 'poster')" :alt="movie.title" class="movie-poster" />
+            <div class="movie-info">
+              <h3 class="movie-title">{{ movie.title }}</h3>
+              <p class="movie-genres">
+                {{ movie.release_date ? movie.release_date.substring(0, 4) : 'Ano Desconhecido' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button class="nav-button next-button" @click="scrollTopRatedMovies('next')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd" d="M11.72 4.22a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L18.19 12l-6.47-6.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.home-page {
+  background-color: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.loading-full-screen,
+.error-full-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 2em;
+  color: #ccc;
+  background-color: #1a1a1a;
+}
+
+
+.main-banner {
+  width: 100%;
+  height: 600px;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 50px;
+  box-sizing: border-box;
+}
+
+
+.main-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.9) 100%);
+  z-index: 1;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.banner-year {
+  font-size: 1.2em;
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+.banner-title {
+  font-size: 4em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+
+.banner-meta {
+  font-size: 1.1em;
+  color: #e0e0e0;
+  margin-bottom: 15px;
+}
+
+.banner-description {
+  font-size: 1.1em;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #e50914;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #f40612;
+}
+
+.btn-secondary {
+  background-color: rgba(109, 109, 109, 0.7);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(109, 109, 109, 0.9);
+}
+
+.btn-primary svg,
+.btn-secondary svg {
+  width: 20px;
+  height: 20px;
+}
+
+.banner-indicators {
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+}
+
+.indicator.active {
+  background-color: #e50914;
+}
+
+
+
+.movies-section {
+  padding: 20px;
+  background-color: #1a1a1a;
+  margin-top: 20px;
+
+}
+
+.movies-section h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #f0f0f0;
+}
+
+.movies-carousel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0 50px;
+
+  margin: 0 -50px;
+}
+
+.movies-list {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  gap: 20px;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex-grow: 1;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.movies-list::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  width: 200px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+}
+
+.movie-poster {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.movie-title {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+  color: #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-genres {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.nav-button {
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  position: absolute;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.nav-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.nav-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.prev-button {
+  left: 0;
+  transform: translateX(-50%) rotate(180deg);
+}
+
+.next-button {
+  right: 0;
+  transform: translateX(50%);
+}
+</style>
